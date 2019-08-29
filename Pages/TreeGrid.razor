@@ -1,0 +1,28 @@
+﻿@page "/treegrid"
+
+@inherits  TreeGridBase
+
+    <EjsTreeGrid height="380"
+                 DataSource="@TreeGridData"
+                 IdMapping="TaskID"
+                 ParentIdMapping="ParentID"
+                 AllowPaging="true"
+                 TreeColumnIndex="1"
+                 AutoCheckHierarchy="true"
+                 AllowExcelExport="true"
+                 Toolbar="@(new List<string>() { "ExcelExport" })">
+        <TreeGridPageSettings PageCount="5"
+                              PageSize="5"
+                              PageSizeMode="PageSizeMode.Root"
+                              PageSizes="new List<int>() { 2, 5, 10}">
+        </TreeGridPageSettings>
+        <TreeGridEvents OnToolbarClick="ToolbarClickHandler" TValue="TreeData"></TreeGridEvents>
+        <TreeGridColumns>
+            <TreeGridColumn Field="TaskID" HeaderText="Task ID" Width="60" TextAlign="TextAlign.Right"></TreeGridColumn>
+            <TreeGridColumn Field="TaskName" HeaderText="Task Name" Width="190" ShowCheckbox="true"></TreeGridColumn>
+            <TreeGridColumn Field="StartDate" HeaderText=" Start Date" Format="yMd" Type="date" Width="90" TextAlign="TextAlign.Right"></TreeGridColumn>
+            <TreeGridColumn Field="EndDate" HeaderText="End Date" Format="yMd" Type="date" Width="100" TextAlign="TextAlign.Right"></TreeGridColumn>
+            <TreeGridColumn Field="Duration" HeaderText="Duration" Width="80" TextAlign="TextAlign.Right"></TreeGridColumn>
+            <TreeGridColumn Field="Priority" HeaderText="Priority" Width="80"></TreeGridColumn>
+        </TreeGridColumns>
+    </EjsTreeGrid>
