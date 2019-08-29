@@ -20,4 +20,8 @@
     <Watch Include="..\**\*.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include=".circleci\config.yml" />
+  </ItemGroup>
+
 </Project>
