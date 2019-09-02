@@ -1,19 +1,46 @@
 ﻿@page "/grid"
 
-    <EjsButton OnClick="ReorderBtn" CssClass="e-primary" IsPrimary="true" Content="Reorder Freight"></EjsButton>
-<EjsGrid @ref="DefaultGrid" @ref:suppressField TValue="Order" 
-         AllowPaging="true" 
-         AllowSorting="true" 
-         AllowExcelExport="true" 
-         AllowFiltering="true" 
-         AllowGrouping="true" 
-         AllowMultiSorting="true" 
-         AllowResizing="true" 
-         AllowRowDragAndDrop="true" 
+<EjsButton OnClick="ReorderBtn" CssClass="e-primary" IsPrimary="true" Content="Reorder Freight"></EjsButton>
+<EjsGrid @ref="DefaultGrid" @ref:suppressField TValue="Order" ModelType="@Model"
+         AllowPaging="true"
+         AllowSorting="true"
+         AllowExcelExport="true"
+         AllowFiltering="true"
+         AllowGrouping="true"
+         AllowMultiSorting="true"
+         AllowResizing="true"
+         AllowRowDragAndDrop="true"
          AllowReordering="true"
          AllowPdfExport="true"
-         Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Cancel", "Update" })"
+         Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Cancel", "Update", "Search", "Print", "ExcelExport", "PdfExport" })"
          DataSource="@Orders">
+    <GridTemplates>
+        <DetailTemplate>
+            @{
+                var order = (context as Order);
+                <table class="detailtable" width="100%">
+                    <colgroup>
+                        <col width="35%">
+                        <col width="35%">
+                        <col width="30%">
+                    </colgroup>
+                    <tbody>
+                                    <tr>
+                                        <td>
+                                            @order.ShipDate
+                                        </td>
+                                        <td>
+                                            @order.City
+                                        </td>
+                                        <td>
+                                            @order.Country
+                                        </td>
+                                    </tr>
+                    </tbody>
+                </table>
+            }
+        </DetailTemplate>
+    </GridTemplates>
     @*<EjsDataManager Url="https://services.odata.org/V4/Northwind/Northwind.svc/Orders/" Adaptor="Adaptors.ODataV4Adaptor"></EjsDataManager>*@
     <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="Syncfusion.EJ2.Blazor.Grids.EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>
     <GridColumns>
@@ -24,9 +51,18 @@
     </GridColumns>
 </EjsGrid>
 
+<style type="text/css" class="cssStyles">
+    .e-grid .e-altrow {
+        background-color: #fafafa;
+    }
+</style>
+
+
 @code{
 
     private EjsGrid<Order> DefaultGrid;
+
+    public Order Model = new Order();
 
     public class Order
     {
@@ -34,6 +70,9 @@
         public string CustomerID { get; set; }
         public DateTime? OrderDate { get; set; }
         public double? Freight { get; set; }
+        public DateTime? ShipDate { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
     }
 
     public List<Order> Orders { get; set; }
@@ -46,6 +85,9 @@
             CustomerID = (new string[] { "ALFKI", "ANANTR", "ANTON", "BLONP", "BOLID" })[new Random().Next(5)],
             Freight = 2.1 * x,
             OrderDate = DateTime.Now.AddDays(-x),
+            ShipDate = DateTime.Now.AddDays(-x),
+            City = (new string[] { "Seattle", "Tacoma", "Redmond", "Kirkland", "London" })[new Random().Next(5)],
+            Country = (new string[] { "USA", "UK" })[new Random().Next(2)],
         }).ToList();
     }
 
