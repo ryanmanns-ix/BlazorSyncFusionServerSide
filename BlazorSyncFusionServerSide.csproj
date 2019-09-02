@@ -21,7 +21,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Components\CpGrid.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Watch Remove="Components\CpGrid.razor" />
+    <Watch Remove="Pages\Grid.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include=".circleci\config.yml" />
+    <None Include="Components\CpGrid.razor" />
   </ItemGroup>
 
 </Project>
