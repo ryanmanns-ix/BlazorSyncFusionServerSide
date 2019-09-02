@@ -1,5 +1,7 @@
 ﻿@page "/grid"
 
+@using System.Timers;
+
 <EjsButton OnClick="ReorderBtn" CssClass="e-primary" IsPrimary="true" Content="Reorder Freight"></EjsButton>
 <EjsButton OnClick="ToggleColumnVisibility" CssClass="e-primary" IsPrimary="true" Content="Toggle Column Visibility"></EjsButton>
 <EjsGrid @ref="DefaultGrid" @ref:suppressField TValue="Order" ModelType="@Model"
@@ -90,6 +92,10 @@
 
     public bool ShowCustomerId = true;
 
+    private Timer DataTimer;
+
+    private int Index = 80;
+
     public class Order
     {
         public int? OrderID { get; set; }
@@ -115,6 +121,33 @@
             City = (new string[] { "Seattle", "Tacoma", "Redmond", "Kirkland", "London" })[new Random().Next(5)],
             Country = (new string[] { "USA", "UK" })[new Random().Next(2)],
         }).ToList();
+
+        if (DataTimer == null)
+        {
+            DataTimer = new Timer(5000);
+            DataTimer.Elapsed += AddData;
+            DataTimer.AutoReset = true;
+        }
+
+        DataTimer.Start();
+    }
+
+    private void AddData(object source, ElapsedEventArgs args)
+    {
+        Orders.Add(new Order()
+        {
+            OrderID = 1000 + Index,
+            CustomerID = (new string[] { "ZZZZZ", "YYYYY", "XXXXX", "WWWWW", "VVVVV" })[new Random().Next(5)],
+            Freight = 2.1 * Index,
+            OrderDate = DateTime.Now.AddDays(-Index),
+            ShipDate = DateTime.Now.AddDays(-Index),
+            City = (new string[] { "Seattle", "Tacoma", "Redmond", "Kirkland", "London" })[new Random().Next(5)],
+            Country = (new string[] { "USA", "UK" })[new Random().Next(2)],
+        });
+
+        Index++;
+
+        DefaultGrid.Refresh();
     }
 
     public void ReorderBtn()
