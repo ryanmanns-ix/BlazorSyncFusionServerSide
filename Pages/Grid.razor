@@ -1,6 +1,7 @@
 ﻿@page "/grid"
 
 <EjsButton OnClick="ReorderBtn" CssClass="e-primary" IsPrimary="true" Content="Reorder Freight"></EjsButton>
+<EjsButton OnClick="ToggleColumnVisibility" CssClass="e-primary" IsPrimary="true" Content="Toggle Column Visibility"></EjsButton>
 <EjsGrid @ref="DefaultGrid" @ref:suppressField TValue="Order" ModelType="@Model"
          AllowPaging="true"
          AllowSorting="true"
@@ -43,17 +44,40 @@
     </GridTemplates>
     @*<EjsDataManager Url="https://services.odata.org/V4/Northwind/Northwind.svc/Orders/" Adaptor="Adaptors.ODataV4Adaptor"></EjsDataManager>*@
     <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="Syncfusion.EJ2.Blazor.Grids.EditMode.Dialog" ShowDeleteConfirmDialog="true"></GridEditSettings>
+    <GridEvents TValue="Order" RowDataBound="RowBound"></GridEvents>
     <GridColumns>
         <GridColumn Field=@nameof(Order.OrderID) HeaderText="Order ID" IsPrimaryKey="true" TextAlign="TextAlign.Right" Width="120"></GridColumn>
-        <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer Name" Width="150"></GridColumn>
+        <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer Name" Width="150" Visible="@ShowCustomerId">
+            <Template>
+                @{
+                    if (ShowCustomerId)
+                    {
+                        var order = (context as Order);
+                        @order.CustomerID
+                    }
+                }
+            </Template>
+        </GridColumn>
         <GridColumn Field=@nameof(Order.OrderDate) HeaderText=" Order Date" Format="yMd" Type="ColumnType.Date" TextAlign="TextAlign.Right" Width="130"></GridColumn>
         <GridColumn Field=@nameof(Order.Freight) HeaderText="Freight" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
     </GridColumns>
 </EjsGrid>
 
 <style type="text/css" class="cssStyles">
-    .e-grid .e-altrow {
+    /*.e-grid .e-altrow {
         background-color: #fafafa;
+    }*/
+
+    .below-25 {
+        background-color: orangered;
+    }
+
+    .below-35 {
+        background-color: yellow;
+    }
+
+    .above-35 {
+        background-color: greenyellow
     }
 </style>
 
@@ -63,6 +87,8 @@
     private EjsGrid<Order> DefaultGrid;
 
     public Order Model = new Order();
+
+    public bool ShowCustomerId = true;
 
     public class Order
     {
@@ -94,5 +120,26 @@
     public void ReorderBtn()
     {
         this.DefaultGrid.ReorderColumns("Freight", "OrderDate");
+    }
+
+    public void ToggleColumnVisibility()
+    {
+        ShowCustomerId = !ShowCustomerId;
+    }
+
+    public void RowBound(RowDataBoundEventArgs<Order> args)
+    {
+        if (args.Data.Freight < 10)
+        {
+            args.Row.AddClass(new string[] { "below-25" });
+        }
+        else if (args.Data.Freight < 35)
+        {
+            args.Row.AddClass(new string[] { "below-35" });
+        }
+        else
+        {
+            args.Row.AddClass(new string[] { "above-35" });
+        }
     }
 }
